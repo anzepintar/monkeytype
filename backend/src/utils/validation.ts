@@ -1,7 +1,7 @@
 import _ from "lodash";
-import { intersect } from "./misc";
 import { default as FunboxList } from "../constants/funbox-list";
 import { CompletedEvent } from "@monkeytype/contracts/schemas/results";
+import { intersect } from "@monkeytype/util/arrays";
 
 export function isTestTooShort(result: CompletedEvent): boolean {
   const { mode, mode2, customText, testDuration, bailedOut } = result;
@@ -136,6 +136,10 @@ export function areFunboxesCompatible(funboxesString: string): boolean {
   const oneCharReplacerMax =
     funboxesToCheck.filter((f) => f.frontendFunctions?.includes("getWordHtml"))
       .length <= 1;
+  const oneChangesCapitalisationMax =
+    funboxesToCheck.filter((f) =>
+      f.properties?.find((fp) => fp === "changesCapitalisation")
+    ).length <= 1;
   const allowedConfig = {} as Record<string, string[] | boolean[]>;
   let noConfigConflicts = true;
   for (const f of funboxesToCheck) {
@@ -174,6 +178,7 @@ export function areFunboxesCompatible(funboxesString: string): boolean {
     onePunctuateWordMax &&
     oneCharCheckerMax &&
     oneCharReplacerMax &&
+    oneChangesCapitalisationMax &&
     noConfigConflicts &&
     oneWordOrderMax
   );
